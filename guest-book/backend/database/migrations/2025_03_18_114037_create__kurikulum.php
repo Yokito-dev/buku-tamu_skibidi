@@ -1,12 +1,18 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
-    public function up()
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
-        Schema::create('kepseks', function (Blueprint $table) {
+        if (!Schema::hasTable('kurikulums')) {
+        Schema::create('kurikulums', function (Blueprint $table) {
             $table->id();
             $table->string('nama_tamu');
             $table->string('instansi');
@@ -18,9 +24,13 @@ return new class extends Migration {
             $table->timestamps();
         });
     }
+    }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
-        Schema::dropIfExists('kepseks');
+        Schema::dropIfExists('kurikulums');
     }
 };

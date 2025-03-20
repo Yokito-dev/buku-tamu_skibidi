@@ -2,52 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kepsek;
+use App\Models\Perf_QMRs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
-class KepseksController extends Controller
+class Perf_QMRsController extends Controller
 {
     public function index()
     {
         Log::info('Akses ke endpoint index daftar staf');
-
-        $staf = Kepsek::all();
+        $staf = Perf_QMRs::all();
         return response()->json($staf);
     }
-    
 
     // GANTI "post" MENJADI "store"
     public function store(Request $request)
     {
-        // Tambahkan log untuk melihat data masuk dari front end
-        Log::info('Request masuk ke controller', ['data' => $request->all()]);
-        //Tambahkan Log Dasar 
-        Log::info('Request masuk ke post() controller'); // ← Tambahan log dasar
-        //Data REQUEST dari front end
-        Log::info('Data request dari frontend', ['data' => $request->all()]);
+         // Tambahkan log untuk melihat data masuk dari front end
+         Log::info('Request masuk ke controller', ['data' => $request->all()]);
+         //Tambahkan Log Dasar 
+         Log::info('Request masuk ke post() controller'); // ← Tambahan log dasar
+         //Data REQUEST dari front end
+         Log::info('Data request dari frontend', ['data' => $request->all()]);
         try {
             $validatedData = $request->validate([
                 'nama_tamu' => 'required|string',
                 'instansi' => 'required|string',
-                'tujuan' => 'required|in:Kepala Sekolah,SDM (Sumber Daya Alam),Keuangan / Administrasi,Kurikulum,Kesiswaan,Sarpra (Sarana dan Prasarana),Hubin (Hubungan Industri),PPDB (Penerimaan Peserta Didik Baru),Guru',
-                'nama_yang_dikunjungi' => ['required', 'string', function ($attribute, $value, $fail) {
-                    $validNames = [
-                        'MUHAMMAD SAAD, S.Pd., M.P.d.',
-                        'Muhammad Amsa'
-                    ];
-                    if (!in_array($value, $validNames, true)) {
-                        $fail('Nama yang dikunjungi tidak valid.');
-                    }
-                }],
+                'tujuan' => 'required|in:Kepala Sekolah,Perf. QMR,Keuangan / Administrasi,Kurikulum,Kesiswaan,Sarpra (Sarana dan Prasarana),Hubin (Hubungan Industri),PPDB (Penerimaan Peserta Didik Baru),Guru',
+                'nama_yang_dikunjungi' => ['required', 'string'],
                 'keperluan' => 'required|string',
                 'kartu_identitas' => 'required|in:KTP (Kartu Tanda Penduduk),NPWP (Nomor Pokok Wajib Pajak),ID Pegawai / Karyawan',
                 'nomor_telepon' => 'required|string|min:10|max:15',
             ]);
 
-            $staf = Kepsek::create($validatedData);
+            $staf = Perf_QMRs::create($validatedData);
 
             // Simpan file JSON di folder `storage/app/daftarstaf/`
             $fileName = '/daftarstaf' . time() . '.json';

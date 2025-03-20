@@ -5,20 +5,29 @@ import Image from 'next/image';
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { IoMdSearch } from "react-icons/io";
 import Link from 'next/link';
-
 import Navbar from '../assets/svgs/Navbarstaf.svg';
 import Notif from '../assets/svgs/Lonceng.svg';
 import Profile from '../assets/svgs/Profile.svg';
 import LogoDaftarTamu from '../assets/svgs/IconDaftarAktif.svg';
 
+interface Tamu {
+  nama_tamu: string;
+  instansi: string;
+  tujuan: string;
+  nama_yang_dikunjungi: string;
+  keperluan: string;
+  kartu_identitas: string;
+  nomor_telepon: string;
+}
+
 export default function Page() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Tamu[]>([]);
 
   // Fetch Data dari Laravel
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http:8000/api/kepseks');
+        const response = await axios.get("http://127.0.0.1:8000/api/kepseks");
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -29,16 +38,28 @@ export default function Page() {
   }, []);
 
   // Tanggal Hari Ini
-  const today = new Date();
-  const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-  const months = [
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember",
-  ];
+  const [tanggal, setTanggal] = useState({
+    dayName: '',
+    date: 0,
+    monthName: '',
+    year: 0
+  });
 
-  const dayName = days[today.getDay()];
-  const date = today.getDate();
-  const monthName = months[today.getMonth()];
-  const year = today.getFullYear();
+  useEffect(() => {
+    const today = new Date();
+    const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const months = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus",
+      "September", "Oktober", "November", "Desember",
+    ];
+
+    const dayName = days[today.getDay()];
+    const date = today.getDate();
+    const monthName = months[today.getMonth()];
+    const year = today.getFullYear();
+
+    setTanggal({ dayName, date, monthName, year });
+  }, []);
 
   return (
     <>
@@ -77,8 +98,12 @@ export default function Page() {
         {/* Tanggal */}
         <div className='mt-20'>
           <div className='mb-10 ml-36 flex'>
-            <h1 className='font-semibold ' style={{ fontSize: "17px" }}>{`${dayName}`}</h1>
-            <p className='ml-4 font-medium' style={{ fontSize: "17px" }}>{`${date}, ${monthName}, ${year}`}</p>
+            <h1 className='font-semibold' style={{ fontSize: "17px" }}>
+              {tanggal.dayName}
+            </h1>
+            <p className='ml-36 font-medium mb-10' style={{ fontSize: "17px" }}>
+              {`${tanggal.date} ${tanggal.monthName} ${tanggal.year}`}
+            </p>
           </div>
 
           {/* Tabel */}
@@ -100,12 +125,12 @@ export default function Page() {
                 data.map((item, index) => (
                   <tr key={index} className="bg-white border-2">
                     <td className='text-sm font-medium' style={{ padding: "15px", textAlign: "left" }}>
-                      {kepseks.nama_tamu}<br />
-                      <span className='text-gray-400 text-sm'>{item.instansi}</span>  
+                      {item.nama_tamu}<br />
+                      <span className='text-gray-400 text-sm'>{item.instansi}</span>
                     </td>
                     <td style={{ padding: "15px", textAlign: "left" }}>{item.instansi}</td>
                     <td style={{ padding: "15px", textAlign: "left" }}>{item.tujuan}</td>
-                    <td style={{padding:  "15px", textAlign: "left" }}>{item.nama_yang_dikunjungi}</td>
+                    <td style={{ padding: "15px", textAlign: "left" }}>{item.nama_yang_dikunjungi}</td>
                     <td style={{ padding: "15px", textAlign: "left" }}>{item.keperluan}</td>
                     <td style={{ padding: "15px", textAlign: "left" }}>{item.kartu_identitas}</td>
                     <td style={{ padding: "15px", textAlign: "left" }}>{item.nomor_telepon}</td>
@@ -114,7 +139,7 @@ export default function Page() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" style={{ padding: "15px", textAlign: "center" }}>Tidak ada data</td>
+                  <td colSpan={8} style={{ padding: "15px", textAlign: "center" }}>Tidak ada data</td>
                 </tr>
               )}
             </tbody>
@@ -124,3 +149,5 @@ export default function Page() {
     </>
   );
 }
+
+

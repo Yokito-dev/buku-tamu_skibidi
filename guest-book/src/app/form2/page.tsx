@@ -1,210 +1,279 @@
-'use client';
+  'use client';
 
-import React, { useState } from 'react';
-import Image from 'next/image';
-import Stelkers from '../assets/svgs/StelkerAtas.svg';
-import BgForm from '../assets/svgs/gepeng.svg';
-import Link from 'next/link';
-import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+  import api from "../utils/axios"
+  import React, { useState } from 'react';
+  import Image from 'next/image';
+  import Stelkers from '../assets/svgs/StelkerAtas.svg';
+  import BgForm from '../assets/svgs/gepeng.svg';
+  import Link from 'next/link';
+  import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 
-function Page() {
-  // Data guru per unit
-  const guruPerUnit = {
-    "Kepala Sekolah": ["Muhammad Saad, S.Pd., M.P.d."],
-    "SDM (Sumber Daya Manusia)": ["Budi Santoso", "Rina Permata"],
-    "Keuangan / Administrasi": ["Siti Aminah", "Fadli Rahman"],
-    "Kurikulum": ["Ahmad Fauzi", "Lina Mardiana"],
-    "Kesiswaan": ["Dewi Kartika", "Hendra Wijaya"],
-    "Sarpra (Sarana dan Prasarana)": ["Andi Pratama", "Rina Dewi"],
-    "Hubin (Hubungan Industri)": ["Eko Saputra", "Nina Sari"],
-    "PPDB (Penerimaan Peserta Didik Baru)": ["Ratna Sari", "Yusuf Hidayat"],
-    "Guru": ["Guru 1", "Guru 2", "Guru 3"],
-  };
+  function Page() {
+  
+    const guruPerUnit = {
+      "Kepala Sekolah": ["MUHAMMAD SAAD, S.Pd., M.P.d."],
+      "Perf. QMR": ["ASMAWATI, S.Sos","ERWINDA DWI PRATIWI, S.Pd., M.S.Ed"],
+      "Keuangan / Administrasi": ["RUMAISHA IKHWANA, SE","ADHYTIA ADHYAKSA, S.E.","ADLI DZIL IKRAM, S.Ak","ANDI MUHAMMAD MAULANA SIDENG, Amd","SJAMSIAH, S.S."],
+      "Kurikulum": ["DR. RAHMAT MAHMUD, S.Pd, M.Pd","SRI HASTUTI, S.S.","Drs. SATTUBANG, S.ST, M.Pd","RATU ELIA YUANITA, S.Si","RAODATUL JANNAH, S.T, S.Pd, M.Pd","ALI AKBAR, S. Kom., M.Pd","KHAERUL ISHAK, S.Pd, M.Pd","NURFAIDAH JABBAR, S.IP","YAYU APRILIKA YUNUS, S.Si"],
+      "Kesiswaan": ["ERLINDAH ZULHAIDAH SIDNIWATI SUYUTHI, ST., M.Pd","WIDIANI, S.Pd","ROSMAWATI, S.Pd","ABU ALI, S.Pd, Gr","MUHAMMAD IKMAL AKBAR, S.Pd","A. NOORIAH MUJAHIDAH, S.Pd","FARID MAWARDI, S.Pd, Gr., M.Pd","NURDIANAH, S.Pd., M.Pd","HARYADI INDRAWIJAYA, S.Pd"],
+      "Sarpra (Sarana dan Prasarana)": ["ALI AKBAR, S. Kom., M.Pd","SUKIRMAN","ASRUL, S.Pd, M.Pd","MATIUS RAWA, S.H.","MANSYUR MUIS, S.M.","EKA MERDEKAWATI, ST, M.Pd","AHWAN AZHARI TAHIR, S.T., Gr"],
+      "Hubin (Hubungan Industri)": ["MUSLIADI, S.ST","FIRMAN SYAHIR, S.Pd., M.Pd","DANIEL D. TANAN, SH. M.Pd","SANDY ARDIANSYAH","AYU RISMAYANTI, S.Pd., M.Pd","HASLINA, S.Pd","NURWAHYUNI"],
+      "PPDB (Penerimaan Peserta Didik Baru)": ["YAYU APRILIKA YUNUS, S.Si","DANIEL D. TANAN, SH. M.Pd","FIRMAN SYAHIR, S.Pd., M.Pd"],
+      "Guru": ["ABDUL MALIK, S.Pd","ADI MANGGALIA AMAHORU, S.Pd","ANANDA DZIKMAH AMALIA AZ, S.Tr.Par","ANDI HANIFAH PUTRI RANI, S.Kom","ARMAN, S.Pd., M.Hum.","ASKAR ASWIN AHMAD, S.Pd","ASNAWI, S.HI., Gr","BAKRI CACO, S.Ag, M.Si","DEMETER JANNIAH SABATINI, S.Pd., M.Pd","DEWI, S.Pd","DINDA PUTRU OETAMI, S.Pd., M.Pd","HARI SUSANTO, S.Pd","HILMAWATI, S.Ag., Gr","KARMILA INDAH HASIN, S.Pd., M.Pd","MESY ANDI IDHAM, S.T"," MOSES SALEMBAN, S.Pd","MUH. ADE SYAM AGUNG, S.Pd","MUHAMMAD FADHLAN SUPRIADI, S.Kom","MUHAMMAD NUR ARBI, S.Pd., M.Pd","NADYAH NURHIDAYAH N, S.Pd., M.Pd","NURHIKMAH UTAMI, S.Pd","OKTAVIANTO, S.Kom","PADLI SEPTIAN, S.Pd","RAHMAT DANI S., S.Kom","RISDAYANTI, S.Pd","ROSALINA, S.Ag, M.Si","SAMRIANI, S.Pd., M.Pd"," SITTI DARMAWATI, S.Pd., M.Pd","SUKMAWATI, S.Pd., M.Pd","TIRSA WULANDARI, S.Pd","TRY SUHARTO, S.Pd","UMMI SUNAIR, S.Pd., M.Pd","WAHYU ILAHI SYAM, S.Pd","YHUGI PRATAMA SAPUTRA A., S.Pd"],
+    };
 
-  // State untuk menyimpan data form
-  const [formData, setFormData] = useState({
-    name: '',
-    company: '',
-    unit: '',
-    guru: '',
-    identity: '',
-    keterangan: '',
-    needs: '',
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prevState) => {
-      let newState = { ...prevState, [name]: value };
-
-      // Jika unit adalah "Kepala Sekolah", langsung set guru tanpa dropdown
-      if (name === "unit") {
-        newState.guru = value === "Kepala Sekolah" ? "Muhammad Saad, S.Pd., M.P.d." : "";
-      }
-
-      return newState;
+    const [formData, setFormData] = useState({
+      nama_tamu: "",
+      instansi: "",
+      tujuan: "",
+      nama_yang_dikunjungi: "",
+      keperluan: "",
+      kartu_identitas: "",
+      nomor_telepon: "",
     });
-  };
 
-  const daftarGuru = formData.unit && formData.unit !== "Kepala Sekolah" ? guruPerUnit[formData.unit] || [] : [];
+    const [errorMsg, setErrorMsg] = useState<string | null>(null); // Fungsi Untuk Kirim Error message
 
-  const isFormValid = Object.values(formData).every((value) => value !== '');
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      console.log("Data yang dikirim:", formData);
+      setErrorMsg(null);
+      
+      try {
+        //await api.post("/kepseks", formData);
+        await api.post("/perf_q_m_rs", formData);
+        
+        window.location.href = "/closing";
+      } catch (error: any) {
+        console.error("Gagal mengirim data:", error);
+        if (error.response && error.response.data) {
+          setErrorMsg(error.response.data.message || "Terjadi kesalahan saat mengirim data.");
+        } else {
+          setErrorMsg("Terjadi kesalahan saat mengirim data.");
+        }
+      }
+    };
 
-  return (
-    <>
-      <main className='bg-[#AF1318]'>
-        <Image src={Stelkers} alt="Stelkers" className="ml-[330px]" />
-        <div className="absolute -mt-20">
-          {/* Header dengan tombol kembali */}
-          <div className='flex absolute'>
-            <Link href='/'>
-              <h1 className='flex font-medium mt-5 pl-[18px] text-[#AF1318]'>
-                <MdOutlineKeyboardArrowLeft className='mt-1' /> Kembali
-              </h1>
+
+    const handleChange = (
+      e: React.ChangeEvent<
+        HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+      >
+    ) => {
+      const { name, value } = e.target;
+
+      setFormData((prevState) => {
+        let newState = { ...prevState, [name]: value };
+
+        if (name === "tujuan" && value === "Kepala Sekolah") {
+          newState.nama_yang_dikunjungi = "MUHAMMAD SAAD, S.Pd., M.P.d.";
+        } else if (name === "tujuan" ) {
+          newState.nama_yang_dikunjungi = "";
+        }
+
+        return newState;
+      });
+    };
+
+    const daftarGuru =
+      formData.tujuan && formData.tujuan !== "Kepala Sekolah"
+        ? guruPerUnit[formData.tujuan as keyof typeof guruPerUnit] || []
+        : [];
+
+    const isFormValid = Object.values(formData).every(
+      (value) => value.trim() !== ""
+    );
+
+    return (
+      <main className="bg-[#AF1318] min-h-screen">
+        <Image src={Stelkers} alt="Stelkers" className="ml-[330px] mb-10" />
+        <div className="absolute -mt-20 w-full">
+          {/* Header */}
+          <div className="flex absolute w-full">
+            <Link href="/">
+              <h1 className="flex font-medium mt-5 pl-[18px] text-[#AF1318]">
+                <MdOutlineKeyboardArrowLeft className="mt-1" /> Kembali
+              </h1> 
             </Link>
-            <p className='text-orange-700 text-xs font-semibold mt-5 ml-[240px]'>
-              Note: <span className='text-[#09122C]'>Semua pertanyaan wajib diisi agar dapat dikumpul</span>
+            <p className="text-orange-700 text-xs font-semibold mt-4 ml-[240px]">
+              Note:{" "}
+              <span className="text-[#09122C]">
+                Semua pertanyaan wajib diisi agar dapat dikumpul
+              </span>
             </p>
           </div>
 
-          <Image src={BgForm} alt="Background Form" width={1600} height={800} className="bg-[#E6E6E9]" />
+          <Image
+            src={BgForm}
+            alt="Background Form"
+            width={1600}
+            height={800}
+            className="bg-[#E6E6E9] "
+          />
 
-          <div className="flex justify-center items-center mt-[70px]">
-            <form className="grid grid-cols-2 gap-x-8 gap-y-4 -mt-[780px] max-w-[1000px] w-full">
-              {/* Kolom Kiri */}
-              <div className="space-y-4">
-                {/* Input Nama */}
+          <div className="flex justify-center items-center mt-[130px]">
+            <form
+              onSubmit={handleSubmit}
+              className="grid grid-cols-2 gap-x-8 gap-y-4 -mt-[790px] max-w-[1000px] w-full px-4"
+            >
+              <div className="space-y-[18px]">
                 <div>
-                  <label className="block text-sm font-medium text-black mb-2">Nama</label>
+                  <label className="block text-sm font-medium text-black mb-2">
+                    Nama
+                  </label>
                   <input
                     type="text"
-                    name="name"
+                    name="nama_tamu"
                     className="w-full p-4 border border-black rounded-[17px] bg-[#ECECF2]"
                     placeholder="Nama lengkap (KAPITAL)"
-                    value={formData.name}
+                    value={formData.nama_tamu}
                     onChange={handleChange}
                   />
                 </div>
 
-                {/* Input Instansi */}
                 <div>
-                  <label className="block text-sm font-medium text-black mb-2">Instansi</label>
+                  <label className="block text-sm font-medium text-black mb-2">
+                    Instansi
+                  </label>
                   <input
                     type="text"
-                    name="company"
-                    className="w-full p-4 border border-black rounded-[17px] bg-[#ECECF2]"
+                    name="instansi"
+                    className="w-full p-[16px] border border-black rounded-[17px] bg-[#ECECF2]"
                     placeholder="Instansi / Jabatan"
-                    value={formData.company}
+                    value={formData.instansi}
                     onChange={handleChange}
                   />
                 </div>
 
-                {/* Pilih Unit */}
                 <div>
-                  <label className="block text-sm font-medium text-black mb-2">Tujuan (Unit)</label>
+                  <label className="block text-sm font-medium text-black mb-2">
+                    Tujuan (Unit)
+                  </label>
                   <select
-                    name="unit"
+                    name="tujuan"
                     className="w-full p-4 border border-black rounded-[17px] bg-[#ECECF2]"
-                    value={formData.unit}
+                    value={formData.tujuan}
                     onChange={handleChange}
                   >
                     <option value="">Unit</option>
                     {Object.keys(guruPerUnit).map((unit) => (
-                      <option key={unit} value={unit}>{unit}</option>
+                      <option key={unit} value={unit}>
+                        {unit}
+                      </option>
                     ))}
                   </select>
                 </div>
 
-                {/* Pilih Guru atau otomatis isi jika Kepala Sekolah */}
                 <div>
-                  <label className="block text-sm font-medium text-black mb-2">Nama Yang Dikunjungi</label>
-                  {formData.unit === "Kepala Sekolah" ? (
+                  <label className="block text-sm font-medium text-black mb-2">
+                    Nama Yang Dikunjungi
+                  </label>
+                  {formData.tujuan === "Kepala Sekolah" ? (
                     <input
                       type="text"
-                      name="guru"
+                      name="nama_yang_dikunjungi"
                       className="w-full p-4 border border-black rounded-[17px] bg-[#ECECF2]"
-                      value="Muhammad Saad, S.Pd., M.P.d."
+                      value="MUHAMMAD SAAD, S.Pd., M.P.d."
                       readOnly
                     />
                   ) : (
                     <select
-                      name="guru"
+                      name="nama_yang_dikunjungi"
                       className="w-full p-4 border border-black rounded-[17px] bg-[#ECECF2]"
-                      value={formData.guru}
+                      value={formData.nama_yang_dikunjungi}
                       onChange={handleChange}
-                      disabled={!formData.unit}
+                      disabled={!formData.tujuan}
                     >
                       <option value="">Memilih Orang</option>
                       {daftarGuru.map((guru, index) => (
-                        <option key={index} value={guru}>{guru}</option>
+                        <option key={index} value={guru}>
+                          {guru}
+                        </option>
                       ))}
                     </select>
                   )}
                 </div>
               </div>
 
-              {/* Kolom Kanan */}
               <div className="space-y-4">
-                {/* Textarea Keperluan */}
                 <div>
-                  <label className="block text-sm font-medium text-black mb-2">Keperluan</label>
+                  <label className="block text-sm font-medium text-black mb-2">
+                    Keperluan
+                  </label>
                   <textarea
-                    name="keterangan"
+                    name="keperluan"
                     className="w-full p-4 border border-black rounded-[17px] bg-[#ECECF2] h-[159px] resize-none"
                     placeholder="Jelaskan keperluan anda..."
-                    value={formData.keterangan}
+                    value={formData.keperluan}
                     onChange={handleChange}
                   />
                 </div>
 
-                {/* Pilih Kartu Identitas */}
                 <div>
-                  <label className="block text-sm font-medium text-black mb-2">Kartu Identitas</label>
+                  <label className="block text-sm font-medium text-black mb-2">
+                    Kartu Identitas
+                  </label>
                   <select
-                    name="identity"
+                    name="kartu_identitas"
                     className="w-full p-4 border border-black rounded-[17px] bg-[#ECECF2]"
-                    value={formData.identity}
+                    value={formData.kartu_identitas}
                     onChange={handleChange}
                   >
-                    <option value="">Pilih Identitas</option>
-                    <option value="KTP">KTP</option>
-                    <option value="NPWP">NPWP</option>
-                    <option value="ID Pegawai / Karyawan">ID Pegawai / Karyawan</option>
+                    <option value="">Pilih</option>
+                    <option value="KTP (Kartu Tanda Penduduk)">
+                      KTP (Kartu Tanda Penduduk)
+                    </option>
+                    <option value="NPWP (Nomor Pokok Wajib Pajak)">
+                      NPWP (Nomor Pokok Wajib Pajak)
+                    </option>
+                    <option value="ID Pegawai / Karyawan">
+                      ID Pegawai / Karyawan
+                    </option>
                   </select>
                 </div>
 
-                {/* Input Nomor Telepon */}
                 <div>
-                  <label className="block text-sm font-medium text-black mb-2">Nomor Telepon</label>
+                  <label className="block text-sm font-medium text-black mb-2">
+                    Nomor Telepon
+                  </label>
                   <input
                     type="text"
-                    name="needs"
+                    name="nomor_telepon"
                     className="w-full p-4 border border-black rounded-[17px] bg-[#ECECF2]"
                     placeholder="08.."
-                    value={formData.needs}
+                    value={formData.nomor_telepon}
+                    minLength={10}
                     onChange={handleChange}
                   />
                 </div>
               </div>
+
+              <div className="col-span-2 flex justify-center mt-6">
+                <button
+                  type="submit"
+                  className={`px-6 py-4 rounded-[17px] text-white font-medium ${
+                    isFormValid
+                      ? "bg-[#db3c3c] hover:bg-[#ff3131]"
+                      : "bg-red-400 cursor-not-allowed"
+                  }`}
+                  disabled={!isFormValid}
+                >
+                  Submit
+                </button>
+              </div>
+              
+              {errorMsg && (
+                <div className="col-span-2 text-red-500 text-center mt-2">
+                  {errorMsg}  
+                </div>
+              )}
             </form>
-
-            {/* Tombol Submit */}
-            <Link href="/closing" className="absolute -mt-[250px]">
-              <button className={`text-white font-bold px-10 py-2 rounded-full bg-[#BC2D32] ${!isFormValid && 'opacity-50 cursor-not-allowed'}`} disabled={!isFormValid}>
-                Submit
-              </button>
-            </Link>
-
           </div>
         </div>
-        <Image src={Stelkers} alt="Stelkers" className="ml-[330px]  mt-[410px]" />
-
-        {/* Warna merah di bawah Stelkers */}
-        <div className="w-full h-[300px] bg-[#AF1318]"></div>
+        <Image src={Stelkers} alt="Stelkers" className="ml-[330px] mt-[550px]" />
       </main>
-    </>
-  );
-}
+    );
+  }
 
-export default Page;
+
+  export default Page;
