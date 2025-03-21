@@ -29,11 +29,15 @@ function page() {
             src={Icon}
             alt="Navbar"
             width={230}
-            style={{ marginTop: "-100px" }}
+            style={{ marginTop: "-100px", }}
           />
 
-        <div className='flex absolute top-[-18px] right-10'>
-          <Image src={Notif} alt='Notif' width={30} className='mr-[35px] cursor-pointer' />
+        <div className='flex absolute top-[-22px] right-2'>
+          <Image 
+          src={Notif} 
+          alt='Notif' 
+          width={30} 
+          className='mr-[35px] cursor-pointer hover:opacity-80' />
           <Link href="/profile">
             <Image
               src={Profile}
@@ -42,9 +46,7 @@ function page() {
               className="cursor-pointer hover:opacity-80 transition-opacity mr-[69px]"
             />
           </Link>
-        </div>
-
-        
+        </div>        
         </div>
         <Image
           src={TelkomBulat}

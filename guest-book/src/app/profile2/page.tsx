@@ -8,7 +8,7 @@ import Profile from '../assets/svgs/ProfileHitam.svg';
 import BgBlur2 from "../assets/svgs/BgBlur2.svg";
 
 function Page() {
-  useAuthMiddleware();
+  
   const { user, logout } = useAuth();
   const router = useRouter();
   const [showWarningModal, setShowWarningModal] = useState(false);

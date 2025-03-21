@@ -33,15 +33,7 @@ class KepseksController extends Controller
                 'nama_tamu' => 'required|string',
                 'instansi' => 'required|string',
                 'tujuan' => 'required|in:Kepala Sekolah,SDM (Sumber Daya Alam),Keuangan / Administrasi,Kurikulum,Kesiswaan,Sarpra (Sarana dan Prasarana),Hubin (Hubungan Industri),PPDB (Penerimaan Peserta Didik Baru),Guru',
-                'nama_yang_dikunjungi' => ['required', 'string', function ($attribute, $value, $fail) {
-                    $validNames = [
-                        'MUHAMMAD SAAD, S.Pd., M.P.d.',
-                        'Muhammad Amsa'
-                    ];
-                    if (!in_array($value, $validNames, true)) {
-                        $fail('Nama yang dikunjungi tidak valid.');
-                    }
-                }],
+                'nama_yang_dikunjungi' => ['required', 'string'],
                 'keperluan' => 'required|string',
                 'kartu_identitas' => 'required|in:KTP (Kartu Tanda Penduduk),NPWP (Nomor Pokok Wajib Pajak),ID Pegawai / Karyawan',
                 'nomor_telepon' => 'required|string|min:10|max:15',

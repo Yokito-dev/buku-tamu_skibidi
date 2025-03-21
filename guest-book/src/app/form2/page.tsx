@@ -7,7 +7,7 @@
   import BgForm from '../assets/svgs/gepeng.svg';
   import Link from 'next/link';
   import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
-
+  
   function Page() {
   
     const guruPerUnit = {
@@ -36,25 +36,55 @@
 
     const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      console.log("Data yang dikirim:", formData);
       setErrorMsg(null);
-      
+    
+      let endpoint = "";
+    
+      if (formData.tujuan === "Kepala Sekolah") {
+        endpoint = "/kepseks";
+      } else if (formData.tujuan === "Perf. QMR") {
+        endpoint = "/perf_q_m_rs";
+      } else if (formData.tujuan === "Keuangan / Administrasi") {
+        endpoint = "/keuangan_administrasis";
+      } else if (formData.tujuan === "Kurikulum"){
+        endpoint = "/kurikulums";
+      } else if (formData.tujuan === "Kesiswaan"){
+        endpoint = "/kesiswaans"
+      } else if (formData.tujuan === "Sarpra (Sarana dan Prasarana)"){
+        endpoint = "/sarpras"
+      } else if (formData.tujuan === "Hubin (Hubungan Industri)"){
+        endpoint = "/hubins"
+      }else if (formData.tujuan === "PPDB (Penerimaan Peserta Didik Baru)"){
+        endpoint = "/ppdbs"
+      }else{
+        endpoint = "/gurus"
+      }
+    
+      console.log("Endpoint yang digunakan:", endpoint);
+      console.log("Data yang dikirim:", formData);
+    
       try {
-        //await api.post("/kepseks", formData);
-        await api.post("/perf_q_m_rs", formData);
-        
-        window.location.href = "/closing";
-      } catch (error: any) {
-        console.error("Gagal mengirim data:", error);
-        if (error.response && error.response.data) {
-          setErrorMsg(error.response.data.message || "Terjadi kesalahan saat mengirim data.");
+        const response = await api.post(endpoint, formData, {
+          headers: { "Content-Type": "application/json" },
+        });
+    
+        console.log("Response dari API:", response.data);
+    
+        if (response.status === 201) {
+          window.location.href = "/closing"; // Navigasi tanpa useRouter
         } else {
-          setErrorMsg("Terjadi kesalahan saat mengirim data.");
+          setErrorMsg("Gagal mengirim data, coba lagi.");
         }
+      } catch (error: any) {
+        console.error("Error response:", error.response?.data);
+        setErrorMsg(error.response?.data?.message || "Terjadi kesalahan saat mengirim data.");
       }
     };
-
-
+    
+  
+    
+    
+    
     const handleChange = (
       e: React.ChangeEvent<
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement

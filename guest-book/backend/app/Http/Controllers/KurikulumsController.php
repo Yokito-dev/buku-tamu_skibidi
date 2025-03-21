@@ -24,23 +24,7 @@ class KurikulumsController extends Controller
                 'nama_tamu' => 'required|string',
                 'instansi' => 'required|string',
                 'tujuan' => 'required|in:Kepala Sekolah,Perf QMR,Keuangan / Administrasi,Kurikulum,Kesiswaan,Sarpra (Sarana dan Prasarana),Hubin (Hubungan Industri),PPDB (Penerimaan Peserta Didik Baru),Guru',
-                'nama_yang_dikunjungi' => ['required', 'string', function ($attribute, $value, $fail) {
-                    $validNames = [
-                      "DR. RAHMAT MAHMUD, S.Pd, M.Pd",
-                      "SRI HASTUTI, S.S.",
-                      "Drs. SATTUBANG, S.ST, M.Pd",
-                      "RATU ELIA YUANITA, S.Si",
-                      "RAODATUL JANNAH, S.T, S.Pd, M.Pd",
-                      "ALI AKBAR, S. Kom., M.Pd",
-                      "KHAERUL ISHAK, S.Pd, M.Pd",
-                      "NURFAIDAH JABBAR, S.IP",
-                      "YAYU APRILIKA YUNUS, S.Si"
-                    ];
-                    
-                    if (!in_array($value, $validNames, true)) {
-                        $fail('Nama yang dikunjungi tidak valid.');
-                    }
-                }],
+                'nama_yang_dikunjungi' => ['required', 'string'],
                 'keperluan' => 'required|string',
                 'kartu_identitas' => 'required|in:KTP (Kartu Tanda Penduduk),NPWP (Nomor Pokok Wajib Pajak),ID Pegawai / Karyawan',
                 'nomor_telepon' => 'required|string|min:10|max:15',
