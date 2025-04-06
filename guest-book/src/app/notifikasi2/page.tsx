@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import BgBlur2 from "../assets/svgs/BgBlur2.svg";  
+import BgBlur2 from "../assets/images/BgBlur2.png";  
 
 function Page() {
   const router = useRouter();

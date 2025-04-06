@@ -12,6 +12,7 @@ use App\Http\Controllers\SarpraController;
 use App\Http\Controllers\HubinController;
 use App\Http\Controllers\PpdbController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\ChartController;
 
 Route::post('/register', [authController::class, 'register']);
 Route::post('/login', [authController::class, 'login']);
@@ -47,3 +48,5 @@ Route::post('/ppdbs', [PpdbController::class, 'store']);
 
 Route::get('/gurus', [GuruController::class, 'index']);
 Route::post('/gurus', [GuruController::class, 'store']);
+    
+Route::get('/chart-data', [ChartController::class, 'getChartData']);

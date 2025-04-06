@@ -26,10 +26,11 @@ interface Tamu {
     keperluan: string;
     kartu_identitas: string;
     nomor_telepon: string;
+    created_at: Date;
 }
 
 function page() {
-
+    const [searchTerm, setSearchTerm] = useState<string>('');
     const { user, logout } = useAuth();
     const router = useRouter();
     const [showWarningModal, setShowWarningModal] = useState(false);
@@ -93,6 +94,20 @@ function page() {
         fetchData();
     }, []);
 
+    const filteredData = data.filter(tamu =>
+        tamu.nama_yang_dikunjungi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tamu.tujuan.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        tamu.keperluan.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (tamu.created_at
+            ? new Date(tamu.created_at).toLocaleDateString("id-ID", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+            }).toLowerCase().includes(searchTerm.toLowerCase())
+            : false)
+    );
+
     const today = new Date();
     const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
     const months = [
@@ -135,14 +150,18 @@ function page() {
                                         outline: 'none',
                                         fontSize: '14px',
                                     }}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
                                     className="mt-28"
                                 />
-                                <Image
-                                    src={Profile}
-                                    alt=''
-                                    width={30}
-                                    className='mt-[113px] ml-36'
-                                />
+                                <Link href="/profile3">
+                                    <Image
+                                        src={Profile}
+                                        alt="Profile"
+                                        width={30}
+                                        className="mt-[113px] ml-36 cursor-pointer transition-transform duration-300 hover:scale-110"
+                                    />
+                                </Link>
+
                             </div>
                             <div className='p-8 ml-14 mt-5 mr-[-55px] bg-[#E4262C] rounded-lg'>
                                 <p className='text-2xl ml-7 text-white font-semibold'>
@@ -163,15 +182,18 @@ function page() {
                                             <th className="p-3" style={{ borderRadius: "20px 0px 0px 0px" }}></th>
                                             <th></th>
                                             <th className="text-[14px]" style={{ padding: "20px", textAlign: "left" }}>Nama</th>
-                                            <th className="text-[14px]" style={{ padding: "15px", textAlign: "left" }}>Hari Tanggal</th>
+                                            <th className="text-[14px]" style={{ padding: "15px", textAlign: "left" }}>Hari / Tanggal</th>
                                             <th className="text-[14px]" style={{ padding: "15px", textAlign: "left" }}>Tujuan</th>
+                                            <th className="text-[14px]" style={{ padding: "15px", textAlign: "left" }}>Nama Yang Dikunjungi</th>
                                             <th className="text-[14px]" style={{ padding: "15px", textAlign: "left" }}>Keperluan</th>
+                                            <th className="text-[14px]" style={{ padding: "15px", textAlign: "left" }}>Kartu Identitas</th>
+                                            <th className="text-[14px]" style={{ padding: "15px", textAlign: "left" }}>Nomor Telepon</th>
                                             <th className="text-[14px]" style={{ borderRadius: "0px 20px 0px 0px", padding: "15px", textAlign: "left" }}>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.length > 0 ? (
-                                            data.map((item, index) => (
+                                        {filteredData.length > 0 ? (
+                                            filteredData.map((item, index) => (
                                                 <tr key={index} className="bg-white border-2">
                                                     <td></td>
                                                     <td className="text-[20px] font-medium" style={{ padding: "0px", textAlign: "right" }}>
@@ -181,14 +203,30 @@ function page() {
                                                         {item.nama_tamu}<br />
                                                         <span className="text-gray-400" style={{ fontSize: "11px" }}>{item.instansi}</span>
                                                     </td>
-                                                    <td className="text-[13px]" style={{ padding: "15px", textAlign: "left" }}>
-                                                        {`${date} ${monthName} ${year}`}
+                                                    <td className="text-sm font-medium" style={{ padding: "15px 20px", textAlign: "left" }}>
+                                                        {item.created_at
+                                                            ? new Date(item.created_at).toLocaleDateString("id-ID", {
+                                                                weekday: "long",
+                                                                day: "numeric",
+                                                                month: "long",
+                                                                year: "numeric",
+                                                            })
+                                                            : "Tanggal tidak tersedia"}
                                                     </td>
                                                     <td className="text-[13px]" style={{ padding: "15px", textAlign: "left" }}>
                                                         {item.tujuan}
                                                     </td>
                                                     <td className="text-[13px]" style={{ padding: "15px", textAlign: "left" }}>
+                                                        {item.nama_yang_dikunjungi}
+                                                    </td>
+                                                    <td className="text-[13px]" style={{ padding: "15px", textAlign: "left" }}>
                                                         {item.keperluan}
+                                                    </td>
+                                                    <td className="text-[13px]" style={{ padding: "15px", textAlign: "left" }}>
+                                                        {item.kartu_identitas}
+                                                    </td>
+                                                    <td className="text-[13px]" style={{ padding: "15px", textAlign: "left" }}>
+                                                        {item.nomor_telepon}
                                                     </td>
                                                     <td style={{ padding: "15px 20px", textAlign: "left" }}>
                                                         -
@@ -215,7 +253,7 @@ function page() {
                     <p className='text-white mt-1 ml-5 mr-16 text-sm'>Beranda</p>
                 </div>
 
-                <Link href='/daftaradmin'>
+                <Link href='/daftaradmin' target="_blank">
                     <div className='mt-[-490px] absolute ml-9 flex p-4 hover:bg-[#9C0006] rounded-lg'>
                         <Image
                             alt=''
@@ -226,7 +264,7 @@ function page() {
                     </div>
                 </Link>
 
-                <Link href='/statistik'>
+                <Link href='/statistik' target="_blank">
                     <div className='mt-[-440px] absolute ml-9 hover:bg-[#9C0006] flex p-4 rounded-lg'>
                         <Image
                             alt=''
@@ -237,7 +275,7 @@ function page() {
                     </div>
                 </Link>
 
-                <Link href='/aksespengguna'>
+                <Link href='/aksespengguna' target="_blank">
                     <div className='mt-[-390px] absolute ml-9 flex p-4 hover:bg-[#9C0006] rounded-lg'>
                         <Image
                             alt=''

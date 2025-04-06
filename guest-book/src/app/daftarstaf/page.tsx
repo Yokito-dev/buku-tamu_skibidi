@@ -19,9 +19,13 @@ interface Tamu {
   keperluan: string;
   kartu_identitas: string;
   nomor_telepon: string;
+  created_at: Date;
 }
 
 export default function Page() {
+
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
   const [kepsekData, setKepsekData] = useState<Tamu[]>([]);
   const [keuanganData, setKeuanganData] = useState<Tamu[]>([]);
   const [perfData, setPerfData] = useState<Tamu[]>([]);
@@ -68,7 +72,6 @@ export default function Page() {
     fetchData();
   }, []);
 
-
   const today = new Date();
   const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
   const months = [
@@ -79,6 +82,21 @@ export default function Page() {
   const date = today.getDate();
   const monthName = months[today.getMonth()];
   const year = today.getFullYear();
+
+  // Filter berdasarkan pencarian nama tamu
+  const filteredData = data.filter(tamu =>
+    tamu.nama_yang_dikunjungi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tamu.tujuan.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    tamu.keperluan.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (tamu.created_at 
+      ? new Date(tamu.created_at).toLocaleDateString("id-ID", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        }).toLowerCase().includes(searchTerm.toLowerCase())
+      : false)
+  );
 
   return (
     <>
@@ -93,12 +111,12 @@ export default function Page() {
           </Link>
           <div className='flex absolute top-6 right-2'>
             <Link href="/notifikasi2">
-            <Image
-              src={Notif}
-              alt='Notif'
-              width={30}
-              className='mr-[35px] cursor-pointer hover:opacity-80 mt-1'
-            />
+              <Image
+                src={Notif}
+                alt='Notif'
+                width={30}
+                className='mr-[35px] cursor-pointer hover:opacity-80 mt-1'
+              />
             </Link>
             <Link href="/profile2">
               <Image
@@ -130,7 +148,9 @@ export default function Page() {
               outline: 'none',
               fontSize: '14px',
               textAlign: 'center', // Sesuaikan text alignment
+
             }}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
 
@@ -157,54 +177,35 @@ export default function Page() {
               </tr>
             </thead>
             <tbody>
-              {data.length > 0 ? (
-                data.map((item, index) => (
+
+              {filteredData.length > 0 ? (
+                filteredData.map((item, index) => (
                   <tr key={index} className="bg-white border-2">
-                    {/* Nama dan Instansi dalam satu sel */}
-                    <td className='text-sm font-medium' style={{ padding: "15px 20px", textAlign: "left" }}> {/* Spacing tambahan */}
+                    <td className='text-sm font-medium' style={{ padding: "15px 20px", textAlign: "left" }}>
                       {item.nama_tamu}<br />
-                      <span className='text-gray-400 text-sm'>{item.instansi}</span> {/* Instansi di bawah nama */}
+                      <span className='text-gray-400 text-sm'>{item.instansi}</span>
                     </td>
-
-                    {/* Tanggal Hari Ini */}
-                    <td className='text-sm font-medium' style={{ padding: "15px 20px", textAlign: "left" }}> {/* Spacing tambahan */}
-                      {` ${date} ${monthName} ${year}`}<br />  {/* Tanggal hari ini */}
+                    <td className="text-sm font-medium" style={{ padding: "15px 20px", textAlign: "left" }}>
+                      {item.created_at
+                        ? new Date(item.created_at).toLocaleDateString("id-ID", {
+                          weekday: "long",
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })
+                        : "Tanggal tidak tersedia"}
                     </td>
-
-                    {/* Tujuan */}
-                    <td style={{ padding: "15px 20px", textAlign: "left" }}> {/* Spacing tambahan */}
-                      {item.tujuan}
-                    </td>
-
-                    {/* Nama yang Dikunjungi */}
-                    <td style={{ padding: "15px 20px", textAlign: "left" }}> {/* Spacing tambahan */}
-                      {item.nama_yang_dikunjungi}
-                    </td>
-
-                    {/* Keperluan */}
-                    <td style={{ padding: "15px 20px", textAlign: "left" }}> {/* Spacing tambahan */}
-                      {item.keperluan}
-                    </td>
-
-                    {/* Kartu Identitas */}
-                    <td style={{ padding: "15px 20px", textAlign: "left" }}> {/* Spacing tambahan */}
-                      {item.kartu_identitas}
-                    </td>
-
-                    {/* Nomor Telepon */}
-                    <td style={{ padding: "15px 20px", textAlign: "left" }}> {/* Spacing tambahan */}
-                      {item.nomor_telepon}
-                    </td>
-
-                    {/* Status */}
-                    <td style={{ padding: "15px 20px", textAlign: "left" }}> {/* Spacing tambahan */}
-                      -
-                    </td>
+                    <td style={{ padding: "15px 20px", textAlign: "left" }}>{item.tujuan}</td>
+                    <td style={{ padding: "15px 20px", textAlign: "left" }}>{item.nama_yang_dikunjungi}</td>
+                    <td style={{ padding: "15px 20px", textAlign: "left" }}>{item.keperluan}</td>
+                    <td style={{ padding: "15px 20px", textAlign: "left" }}>{item.kartu_identitas}</td>
+                    <td style={{ padding: "15px 20px", textAlign: "left" }}>{item.nomor_telepon}</td>
+                    <td style={{ padding: "15px 20px", textAlign: "left" }}>-</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={8} style={{ padding: "15px", textAlign: "center" }}>Tidak ada data</td>
+                  <td colSpan={8} style={{ textAlign: "center", padding: "20px" }}>Tidak ada data tamu.</td>
                 </tr>
               )}
             </tbody>

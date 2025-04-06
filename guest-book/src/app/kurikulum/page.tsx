@@ -12,7 +12,6 @@ import statistik from '../assets/svgs/LogoStatistik.svg';
 import keluar from '../assets/svgs/LogoKeluar.svg';
 import Home from '../assets/svgs/LogoHomeAbu.svg';
 
-
 interface Tamu {
   nama_tamu: string;
   instansi: string;
@@ -26,21 +25,21 @@ interface Tamu {
 
 function Page() {
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [kepsekData, setKepsekData] = useState<Tamu[]>([]);
+  const [kurikulumData, setKurikulumData] = useState<Tamu[]>([]);
   const [data, setData] = useState<Tamu[]>([]); // Combined data for the table
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [kepsekRes,] = await Promise.all([
-          axios.get("http://127.0.0.1:8000/api/kepseks"),
+        const [kurikulumRes,] = await Promise.all([
+            axios.get("http://127.0.0.1:8000/api/kurikulums"),
         ]);
 
-        setKepsekData(kepsekRes.data);
+        setKurikulumData(kurikulumRes.data);
 
         // Combine all data for the table
         setData([
-          ...kepsekRes.data,
+          ...kurikulumRes.data,
         ]);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -99,7 +98,7 @@ function Page() {
                   />
                 </div>
               </Link>
-              <Link href='/statistik' target='_blank'>
+              <Link href='/statistik'>
                 <div className='ml-[-22px] rounded-lg mt-3 hover:bg-[#9C0006] p-[7px]'>
                   <Image
                     src={statistik}
@@ -108,7 +107,7 @@ function Page() {
                   />
                 </div>
               </Link>
-              <Link href='/aksespengguna' target='_blank'>
+              <Link href='/aksespengguna'>
                 <div className='ml-[-22px] rounded-lg mt-3 hover:bg-[#9C0006] p-[7px]'>
                   <Image
                     src={Orang}
@@ -150,16 +149,16 @@ function Page() {
               <p className='text-[25px] flex mt-[35px] ml-5 '><span className='text-base ml-2 font-semibold'>admin lobi</span></p>
             </div>
             <div className='mt-3 flex flex-wrap justify-center'>
-              <Link href='#'>
+              <Link href='/daftaradmin'>
                 <button className='mx-8 my-7 font-medium hover:text-red-600'>Kepala Sekolah</button>
               </Link>
-              <Link href='/Perf' target='_blank'>
+              <Link href='/Perf'>
                 <button className='mx-8 my-7 font-medium hover:text-red-600'>Perf. QMR</button>
               </Link>
-              <Link href='/keuangan' target='_blank'>
+              <Link href='/keuangan'>
                 <button className='mx-8 my-7 font-medium hover:text-red-600'>Keuangan / Administrasi</button>
               </Link>
-              <Link href='/kurikulum' target='_blank'>
+              <Link href='/kurikulum'>
                 <button className='mx-8 my-7 font-medium hover:text-red-600'>Kurikulum</button>
               </Link>
               <Link href='/kesiswaan' target='_blank'>
@@ -193,10 +192,10 @@ function Page() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredData.length > 0 ? (
+                {filteredData.length > 0 ? (
                     filteredData.map((item, index) => (
                       <tr key={index} className="bg-white border-2">
-                        <td className='text-sm font-medium' style={{ padding: "15px 20px", textAlign: "left" }}>
+                        <td className='text-sm font-medium' style={{ padding: "15px", textAlign: "left" }}>
                           {item.nama_tamu}<br />
                           <span className='text-gray-400 text-sm'>{item.instansi}</span>
                         </td>
@@ -209,18 +208,18 @@ function Page() {
                           year: "numeric",
                         })
                         : "Tanggal tidak tersedia"}
-                    </td>
-                        <td style={{ padding: "15px 20px", textAlign: "left" }}>{item.tujuan}</td>
-                        <td style={{ padding: "15px 20px", textAlign: "left" }}>{item.nama_yang_dikunjungi}</td>
-                        <td style={{ padding: "15px 20px", textAlign: "left" }}>{item.keperluan}</td>
-                        <td style={{ padding: "15px 20px", textAlign: "left" }}>{item.kartu_identitas}</td>
-                        <td style={{ padding: "15px 20px", textAlign: "left" }}>{item.nomor_telepon}</td>
-                        <td style={{ padding: "15px 20px", textAlign: "left" }}>-</td>
+                    </td> 
+                        <td style={{ padding: "15px", textAlign: "center" }}>{item.tujuan}</td>
+                        <td style={{ padding: "15px", textAlign: "center" }}>{item.nama_yang_dikunjungi}</td>
+                        <td style={{ padding: "15px", textAlign: "center" }}>{item.keperluan}</td>
+                        <td style={{ padding: "15px", textAlign: "center" }}>{item.kartu_identitas}</td>
+                        <td style={{ padding: "15px", textAlign: "center" }}>{item.nomor_telepon}</td>
+                        <td style={{ padding: "15px", textAlign: "center" }}>-</td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={8} style={{ textAlign: "center", padding: "20px" }}>Tidak ada data tamu.</td>
+                      <td colSpan={8} style={{ padding: "15px", textAlign: "center" }}>Tidak ada data</td>
                     </tr>
                   )}
                 </tbody>

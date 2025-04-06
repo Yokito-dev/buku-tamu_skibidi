@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import useAuthMiddleware from "../hooks/auth";
 
 function page() {
-  useAuthMiddleware();
+  
     const { user, logout } = useAuth();
     const router = useRouter();
     const [showWarningModal, setShowWarningModal] = useState(false);

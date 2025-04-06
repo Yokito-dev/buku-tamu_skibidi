@@ -22,7 +22,7 @@ function Page() {
     await logout();
     router.push('/login2'); 
   };
-
+ 
   const handleCloseModal = () => {
     setShowWarningModal(false);
   };
