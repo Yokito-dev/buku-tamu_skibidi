@@ -63,7 +63,7 @@ function page() {
           style={{ marginTop: "-275px", marginLeft: "100px" }}
         />
 
-        <Link href="/daftarstaf" style={{ position: "absolute" }}>
+        <Link href="/Staf_Kepala_Sekolah" style={{ position: "absolute" }}>
           <button
             className="
               appearance-none rounded-[16px]

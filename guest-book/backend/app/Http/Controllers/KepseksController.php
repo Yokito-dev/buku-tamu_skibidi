@@ -65,4 +65,16 @@ class KepseksController extends Controller
             ], 500);
         }
     }
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string'
+        ]);
+
+        $kepsek = Kepsek::findOrFail($id);
+        $kepsek->status = $request->status;
+        $kepsek->save();
+
+        return response()->json(['message' => 'Status kepsek berhasil diperbarui'], 200);
+    }
 }
